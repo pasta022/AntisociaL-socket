@@ -1,4 +1,10 @@
-const io = require("socket.io")(process.env.PORT, {
+const http = require("http")
+const express = require("express")
+const app = express()
+const port = process.env.PORT || 8080
+const server = http.createServer(app)
+
+const io = require("socket.io")(server, {
   cors: {
     origin: "http://localhost:3000",
   },
@@ -33,7 +39,7 @@ io.on("connection", (socket) => {
   //send and get message
   socket.on("sendMessage", ({ senderId, receiverId, text }) => {
     const user = getReceiver(receiverId);
-    io.to(user.socketId).emit("getMessage", { senderId, text });
+    user && user.socketId && io.to(user.socketId).emit("getMessage", { senderId, text });
   });
 
   //on disconnection
@@ -43,3 +49,7 @@ io.on("connection", (socket) => {
     io.emit("getUsers", users);
   });
 });
+
+server.listen(port, () => {
+  console.log(`listening on ${port}`);
+})
