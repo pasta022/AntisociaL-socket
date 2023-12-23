@@ -30,7 +30,6 @@ const getReceiver = (receiverId) => {
 
 io.on("connection", (socket) => {
   //on connection
-  console.log("user connected");
   socket.on("addUser", (userId) => {
     addUser(userId, socket.id);
     io.emit("getUsers", users);
@@ -44,7 +43,6 @@ io.on("connection", (socket) => {
 
   //on disconnection
   socket.on("disconnect", () => {
-    console.log("user disconnected");
     removeUser(socket.id);
     io.emit("getUsers", users);
   });
